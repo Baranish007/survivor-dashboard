@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Survivor Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    h1 { text-align: center; }
+    #messages { max-width: 600px; margin: auto; }
+    .msg { padding: 10px; border-bottom: 1px solid #ccc; }
+    .timestamp { font-size: 0.8em; color: gray; }
+  </style>
+</head>
+<body>
+  <h1>Survivor Messages</h1>
+  <div id="messages"></div>
+
+  <script>
+    // ===== Firebase Config =====
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+      projectId: "YOUR_PROJECT",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const messagesDiv = document.getElementById('messages');
+
+    // Listen for new messages
+    db.ref('survivor_messages').on('child_added', snapshot => {
+      const msg = snapshot.val();
+      const div = document.createElement('div');
+      div.className = 'msg';
+      const time = new Date().toLocaleTimeString();
+      div.innerHTML = `<span class="timestamp">[${time}]</span> ${msg}`;
+      messagesDiv.prepend(div); // Latest message on top
+    });
+  </script>
+</body>
+</html>
